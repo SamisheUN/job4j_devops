@@ -63,7 +63,7 @@ class CalcControllerTest {
         assertThat(output.getBody()).isEqualTo(expected);
     }
     @Test
-public void whenNegativeNumber() {
+public void whenNegativeNumberTwo() {
     var input = new TwoArgs(-1, -1);
     var expected = new Result(-2);
     var output = new CalcController().summarise(input);
