@@ -1,11 +1,18 @@
 pipeline {
-    agent { label 'agent1' }
+    agent {
+        label 'agent1'
+    }
 
     tools {
         git 'Default'
     }
 
     stages {
+        stage('Prepare') {
+            steps {
+                sh 'chmod +x gradlew'
+            }
+        }
         stage('Parallel Build') {
             parallel {
 
@@ -20,13 +27,11 @@ pipeline {
                         sh './gradlew checkstyleTest'
                     }
                 }
-
                 stage('Build') {
                     steps {
                         sh './gradlew build'
                     }
                 }
-
                 stage('Test and JaCoCo') {
                     steps {
                         sh './gradlew test'
