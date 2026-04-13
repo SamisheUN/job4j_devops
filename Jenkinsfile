@@ -1,64 +1,40 @@
 pipeline {
-    agent {
-        label 'agent1'
-    }
+    agent { label 'agent1' }
 
     tools {
         git 'Default'
     }
 
     stages {
-        stage('Build') {
+        stage('Parallel Build') {
             parallel {
-                stage('Prepare Environment') {
-                    steps {
-                        script {
-                            sh 'chmod +x ./gradlew'
-                        }
-                    }
-                }
+
                 stage('Checkstyle') {
-                    stage('Checkstyle Main') {
-                        steps {
-                            script {
+                    parallel {
+                        stage('Checkstyle Main') {
+                            steps {
                                 sh './gradlew checkstyleMain'
                             }
                         }
-                    }
-                    stage('Checkstyle Test') {
-                        steps {
-                            script {
+                        stage('Checkstyle Test') {
+                            steps {
                                 sh './gradlew checkstyleTest'
                             }
                         }
                     }
-                    stage('Compile') {
-                        steps {
-                            sh './gradlew compileJava'
-                        }
+                }
+
+                stage('Build') {
+                    steps {
+                        sh './gradlew build'
                     }
-                    stage('Test') {
-                        steps {
-                            script {
-                                sh './gradlew test'
-                            }
-                        }
-                    }
-                    stage('JaCoCo') {
-                        stage('JaCoCo Report') {
-                            steps {
-                                script {
-                                    sh './gradlew jacocoTestReport'
-                                }
-                            }
-                        }
-                        stage('JaCoCo Verification') {
-                            steps {
-                                script {
-                                    sh './gradlew jacocoTestCoverageVerification'
-                                }
-                            }
-                        }
+                }
+
+                stage('Test and JaCoCo') {
+                    steps {
+                        sh './gradlew test'
+                        sh './gradlew jacocoTestReport'
+                        sh './gradlew jacocoTestCoverageVerification'
                     }
                 }
             }
