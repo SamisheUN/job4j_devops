@@ -23,13 +23,11 @@ pipeline {
                         }
                     }
                 }
-
                 stage('Build') {
                     steps {
                         sh './gradlew build'
                     }
                 }
-
                 stage('Test and JaCoCo') {
                     steps {
                         sh './gradlew test'
