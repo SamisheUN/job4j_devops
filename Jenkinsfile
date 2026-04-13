@@ -10,8 +10,9 @@ pipeline {
     stages {
         stage('Prepare') {
             steps {
-                sh 'chmod +x gradlew'
-            }
+    sh 'chmod +x gradlew'
+    sh './gradlew build'
+}
         }
         stage('Parallel Build') {
             parallel {
