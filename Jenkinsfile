@@ -18,48 +18,44 @@ pipeline {
                     }
                 }
                 stage('Checkstyle') {
-                    parallel {
-                        stage('Checkstyle Main') {
+                    stage('Checkstyle Main') {
+                        steps {
+                            script {
+                                sh './gradlew checkstyleMain'
+                            }
+                        }
+                    }
+                    stage('Checkstyle Test') {
+                        steps {
+                            script {
+                                sh './gradlew checkstyleTest'
+                            }
+                        }
+                    }
+                    stage('Compile') {
+                        steps {
+                            sh './gradlew compileJava'
+                        }
+                    }
+                    stage('Test') {
+                        steps {
+                            script {
+                                sh './gradlew test'
+                            }
+                        }
+                    }
+                    stage('JaCoCo') {
+                        stage('JaCoCo Report') {
                             steps {
                                 script {
-                                    sh './gradlew checkstyleMain'
+                                    sh './gradlew jacocoTestReport'
                                 }
                             }
                         }
-                        stage('Checkstyle Test') {
+                        stage('JaCoCo Verification') {
                             steps {
                                 script {
-                                    sh './gradlew checkstyleTest'
-                                }
-                            }
-                        }
-                        stage('Compile') {
-                            steps {
-                                sh './gradlew compileJava'
-                            }
-                        }
-                        stage('Test') {
-                            steps {
-                                script {
-                                    sh './gradlew test'
-                                }
-                            }
-                        }
-                        stage('JaCoCo') {
-                            parallel {
-                                stage('JaCoCo Report') {
-                                    steps {
-                                        script {
-                                            sh './gradlew jacocoTestReport'
-                                        }
-                                    }
-                                }
-                                stage('JaCoCo Verification') {
-                                    steps {
-                                        script {
-                                            sh './gradlew jacocoTestCoverageVerification'
-                                        }
-                                    }
+                                    sh './gradlew jacocoTestCoverageVerification'
                                 }
                             }
                         }
@@ -67,7 +63,5 @@ pipeline {
                 }
             }
         }
-
-
     }
 }
