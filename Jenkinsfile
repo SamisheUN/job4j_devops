@@ -9,25 +9,24 @@ pipeline {
         stage('Parallel Build') {
             parallel {
 
-                stage('Checkstyle') {
-                    parallel {
-                        stage('Checkstyle Main') {
-                            steps {
-                                sh './gradlew checkstyleMain'
-                            }
-                        }
-                        stage('Checkstyle Test') {
-                            steps {
-                                sh './gradlew checkstyleTest'
-                            }
-                        }
+                stage('Checkstyle Main') {
+                    steps {
+                        sh './gradlew checkstyleMain'
                     }
                 }
+
+                stage('Checkstyle Test') {
+                    steps {
+                        sh './gradlew checkstyleTest'
+                    }
+                }
+
                 stage('Build') {
                     steps {
                         sh './gradlew build'
                     }
                 }
+
                 stage('Test and JaCoCo') {
                     steps {
                         sh './gradlew test'
